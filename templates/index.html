@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Converter & Merger</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-file-pdf"></i>
+                <h1>PDF Tools</h1>
+            </div>
+            <p class="subtitle">Convert images to PDF & merge multiple PDFs</p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <i class="fas fa-{% if category == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                            {{ message }}
+                            <button class="close-flash" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('images', this)">
+                <i class="fas fa-images"></i>
+                Images to PDF
+            </button>
+            <button class="tab-btn" onclick="switchTab('merge', this)">
+                <i class="fas fa-object-group"></i>
+                Merge PDFs
+            </button>
+        </div>
+
+        <!-- Images to PDF Section -->
+        <div class="upload-section" id="images-section">
+            <div class="section-header">
+                <h2><i class="fas fa-images"></i> Convert Images to PDF</h2>
+                <p>Upload multiple images and convert them into a single PDF file</p>
+            </div>
+
+            <form id="uploadImagesForm" action="/upload_images" method="post" enctype="multipart/form-data">
+                <div class="upload-area" id="uploadAreaImages">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop Images</h3>
+                    <p>or <span class="browse-text">browse files</span></p>
+                    <input type="file" name="img" id="imageInput" accept="image/*" multiple hidden>
+                    <div class="supported-formats">
+                        <small>Supports: JPG, PNG, GIF, BMP, TIFF, WEBP (Max 10MB each)</small>
+                    </div>
+                </div>
+
+                <div class="selected-files" id="selectedImages" style="display: none;">
+                    <h4><i class="fas fa-images"></i> Selected Images</h4>
+                    <div class="files-list" id="imagesFilesList"></div>
+                    <div class="upload-actions">
+                        <button type="button" class="btn btn-secondary" onclick="clearFiles('images')">
+                            <i class="fas fa-times"></i> Clear All
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="convertImagesBtn">
+                            <i class="fas fa-file-pdf"></i> Convert to PDF
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Merge PDFs Section -->
+        <div class="upload-section" id="merge-section" style="display: none;">
+            <div class="section-header">
+                <h2><i class="fas fa-object-group"></i> Merge PDF Files</h2>
+                <p>Combine multiple PDF files into a single document</p>
+            </div>
+
+            <form id="mergePdfsForm" action="/merge_pdfs" method="post" enctype="multipart/form-data">
+                <div class="upload-area" id="uploadAreaPdfs">
+                    <div class="upload-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Drag & Drop PDF Files</h3>
+                    <p>or <span class="browse-text">browse files</span></p>
+                    <input type="file" name="pdfs" id="pdfInput" accept=".pdf" multiple hidden>
+                    <div class="supported-formats">
+                        <small>Supports: PDF files only (Max 16MB total)</small>
+                    </div>
+                </div>
+
+                <div class="selected-files" id="selectedPdfs" style="display: none;">
+                    <h4><i class="fas fa-file-pdf"></i> Selected PDFs</h4>
+                    <div class="files-list" id="pdfsFilesList"></div>
+                    <div class="upload-actions">
+                        <button type="button" class="btn btn-secondary" onclick="clearFiles('pdfs')">
+                            <i class="fas fa-times"></i> Clear All
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="mergePdfsBtn">
+                            <i class="fas fa-object-group"></i> Merge PDFs
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <h3 id="loadingTitle">Processing Files...</h3>
+                <p id="loadingMessage">Please wait while we process your files</p>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h4>Fast Processing</h4>
+                <p>Lightning-fast conversion and merging</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Secure & Private</h4>
+                <p>Your files are processed securely</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h4>Mobile Friendly</h4>
+                <p>Works perfectly on all devices</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/javascript/script.js"></script>
+</body>
+</html>
